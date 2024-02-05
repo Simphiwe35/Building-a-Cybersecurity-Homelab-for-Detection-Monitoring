@@ -1,6 +1,4 @@
-<h1>JWipe - Disk Sanitization</h1>
 
- ### [YouTube Demonstration](https://youtu.be/7eJexJVCqJo)
 
 <h2>Description</h2>
 In Cybersecurity, it could be a daunting task to apply and implement security concepts if there is an unavailability of practical and safe infrastructure to carry out these activities.
@@ -8,7 +6,7 @@ I approached this project with that in mind. This homelab walks through the proc
 <br />
 
 
-<h2>Languages and Utilities Used</h2>
+<h2>CONTENT</h2>
 
 - <b>Configuring pfSense firewall for Network Segmentation & Security
 - Configuring Security Onion as an all-in-one IDS, Security Monitoring, and Log Management solution
@@ -157,75 +155,222 @@ After the reboot, on the Server Manager Dashboard, Click Manage >> Add Roles and
 <img src="https://i.imgur.com/cA5FTgD.png" height="40%" width="40%" alt="Disk Sanitization Steps"/>
 <br />
 <br />
-Observe the wiped disk:  <br/>
+Keep clicking Next till you get to the Server Roles menu
+
+Select Active Directory Domain Services
+
+Select “Add Features“ <br/> 
+<p align="center">
 <img src="https://i.imgur.com/pjlpO0K.png" height="40%" width="40%" alt="Disk Sanitization Steps"/>
-  Select the disk:  <br/>
+ <br />
+<br />
+Click on Next till you get to the Confirmation menu, then click Install
+
+After the Install, Click Close : <br/>
+Click on the flag with the yellow caution triangle
+<p align="center">
 <img src="https://i.imgur.com/2s9Dprj.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 <br />
 <br />
-Enter the number of passes: <br/>
+<br/>
 <img src="https://i.imgur.com/3w35jWI.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 <br />
 <br />
-Confirm your selection:  <br/>
+ Select “Promote this server to a domain controller“
+
+* Select Add a new forest
+
+* Specify a domain name
+
+* Click Next
+
+* Set a Password:  <br/>
+<p align="center">
 <img src="https://i.imgur.com/QUnVdlO.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 <br />
 <br />
-Wait for process to complete (may take some time):  <br/>
+Click Next till you get to the Prerequisites Check Menu
+
+Click Install
+
+Wait for the Reboot  <br/>
+<p align="center">
 <img src="https://i.imgur.com/lvdw09e.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 <br />
 <br />
-Sanitization complete:  <br/>
+After the Reboot, Log back in
+
+Select Manage >> Add Roles & Features again on the Server Manager
+
+Click Next till you get to Server Roles
+
+
+Select Active Directory Certificate Services
+
+Select Add Features  <br/>
+<p align="center">
 <img src="https://i.imgur.com/0lP70BM.png" height="40%" width="40%" alt="Disk Sanitization Steps"/>
 <br />
 <br />
-Observe the wiped disk:  <br/>
+Click Next till you get to the “Confirmation” menu
+
+Check “Restart the destination server automatically if required“
+
+Select Yes
+
+Select Install
+
+After the Installation, Click Close  <br/>
+<p align="center">
 <img src="https://i.imgur.com/ZApXDoG.png" height="40%" width="40%" alt="Disk Sanitization Steps"/>
-  Wait for process to complete (may take some time):  <br/>
+ <br />
+<br />
+  Click on the flag with the yellow caution triangle
+
+Select “Configure Active Directory Certificate Services on the destination server“   <br/>
+Click Next on Credentials
+On the Role Services menu, check Certification Authority <br/>
+<p align="center">
 <img src="https://i.imgur.com/ptqdSq9.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 <br />
 <br />
-Sanitization complete:  <br/>
+Click Next till you get to the Validity period menu and change it to 99 years
+
+Click Next till you get to the Confirmation menu
+
+Then select Configure <br/>
+<p align="center">
 <img src="https://i.imgur.com/1bCJB8o.png" height="40%" width="40%" alt="Disk Sanitization Steps"/>
 <br />
 <br />
-Observe the wiped disk:  <br/>
+Manually restart the server in order for all the settings to take effect.
+
+Now add some Users:
+
+~ Back at the Server Manager Select Tools > Active Directory Users and Computers
+
+
+Select your Domain Name (CYBERWOX.local) > Users, Right Click & Select New > User
+
+~ Enter a First, Last & User logon name for the user (Disregard the “WIN10” and just set a preferred logon name).<br/>
+<p align="center">
 <img src="https://i.imgur.com/RwwSrdE.png" height="40%" width="40%" alt="Disk Sanitization Steps"/>
-  Select the disk:  <br/>
+   <br/>
 <img src="https://i.imgur.com/SpmEHgx.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 <br />
 <br />
-Enter the number of passes: <br/>
+Now Use pfsense as the default gateway for the Domain Controller
+
+~ Navigate to Control Panel > Network and Internet > Network Connections
+
+~ Enter the following configuration <br/>
+<p align="center">
 <img src="https://i.imgur.com/acP0Ifj.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 <br />
 <br />
-Confirm your selection:  <br/>
+Configuring Windows 10 Desktop & Adding a User to the AD Domain  <br/>
+ Navigate to Network Adapter settings on your windows user desktop
+
+~ Right-click on Ethernet0 and select properties
+
+~ Select IPV4
+
+~ Add an IP Address(192.168.2.21) & Use 192.168.2.1 as the default gateway
+
+~ Use 192.168.2.10(VictimsNetwork) as the DNS Server<br/>
+<p align="center">
 <img src="https://i.imgur.com/I6sG1Sg.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 <br />
 <br />
-Wait for process to complete (may take some time):  <br/>
+Search “domain” and select Access work or school
+
+Select Connect > Join this device to local Active Directory Domain
+
+Enter your domain name.local (CYBERWOX.local for me)
+
+
+YOU WILL GET AN ERROR. THIS IS EXPECTED, DON’T PANIC LOL.
+Head over to pfsense:
+At Services > DHCP Server > VICTIMSNETWORK> DNS Server —- This should be the IP of your domain controller(192.168.2.10)
+
+At Services > DHCP Server> VICTIMSNETWORK > Other Options > Domain Name —– This should be the domain name ( CYBERWOX.local )
+
+Now try again, you should get this:  <br/>
+<p align="center">
 <img src="https://i.imgur.com/tEolB8u.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 <br />
 <br />
-Sanitization complete:  <br/>
-<img src="https://i.imgur.com/IUWLKbx.png" height="40%" width="40%" alt="Disk Sanitization Steps"/>
-<br />
-<br />
-Observe the wiped disk:  <br/>
+Installing Splunk on a Ubuntu Server  <br/>
+ Installing Splunk
+On your Ubuntu Server, Navigate to Splunk.com
+
+Click on “Free Splunk“
+
+Create an account or login
+
+Under “Splunk Core Products” >> Splunk Enterprise >> Download Free 60-Day Trial
+
+Select the Linux package and download the .tgz file
+
+Open the terminal and navigate to the downloads directory<br/>
+<p align="center">
 <img src="https://i.imgur.com/WTQSSrr.png" height="40%" width="40%" alt="Disk Sanitization Steps"/>
 <br />
 <br />
-Observe the wiped disk:  <br/>
-<img src="https://i.imgur.com/RCQvIVW.png" height="40%" width="40%" alt="Disk Sanitization Steps"/>
-  Select the disk:  <br/>
-<img src="https://i.imgur.com/NeFGZVy.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+Untar the file:  <br/>
+<img src="https://i.imgur.com/IUWLKbx.png" height="40%" width="40%" alt="Disk Sanitization Steps"/>
 <br />
 <br />
-Enter the number of passes: <br/>
-<img src="https://i.imgur.com/3CWvqC2.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+Navigate to the ~/splunk/bin directory
+
+Use the command ./splunk start to start the splunk instance.
+
+Enter an admin username and password of your choice
+
+Navigate to http://splunk:8000 your browser
+
+Log in with the username and the password you configured in the previous step.  <br/>
+Add the Vmnet6 network adapters to the Splunk adapter
+
+Set up “Receiving” on your Splunk server
+
+Navigate to Settings >> Forwarding and Receiving >> New Receiving Port<br/>
+<p align="center">
+<img src="https://i.imgur.com/RCQvIVW.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
+ <br />
+<br />
+  Enter port 9997 and save
+
+Navigate to Settings >> Indexes >> New index
+
+Name the index “wineventlog” and save
+
+On your Windows Server, Download the Universal Forwarder
+
+Now install the forwarder:
+
+Accept the License Agreement & click Next <br/>
+<p align="center">
+<img src="https://i.imgur.com/NeFGZVy.png" height="40%" width="40%" alt="Disk Sanitization Steps"/>
 <br />
 <br />
-Confirm your selection:  <br/>
+Create a preferred username and password
+
+Enter the IP Address of your Splunk server and the default ports as prompted (8089 & 9997)
+
+Install
+
+Navigate back to your Splunk Instance >> Settings >> Add Data
+
+Select “Forward” <br/>
+<p align="center">
+<img src="https://i.imgur.com/3CWvqC2.png" height="40%" width="40%" alt="Disk Sanitization Steps"/>
+<br />
+<br />
+select the Domain Controller (Windows Server) >> Enter a Server Class Name e.g “Domain Controller” >> Next<br/>
+Select Local Events Logs and choose your desired event logs >> Next<br/>
+Select “wineventlog” as the index >> Review >> Submit<br/>
+This brings us to the end of this homelab. This was fun and exciting to work on and I hope you found value in this process. <br/>
 
 </p>
 
